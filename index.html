@@ -913,7 +913,7 @@ html.privacy-route body{padding-bottom:0}
 }
 
 
-    /* Verification belongs to the existing form; no profession/layout overrides. */
+    /* Existing form styles retained; verification-specific rules are harmless if unused. */
     .lead-verification-wrap { min-width: 0; margin: 18px 0; }
     #lead-turnstile { min-width: 0; max-width: 100%; }
     #lead-verification { margin-top: 8px; }
@@ -922,7 +922,6 @@ html.privacy-route body{padding-bottom:0}
     .verification-retry:disabled { cursor: wait; }
     .form-note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
   </style>
-  <script id="turnstile-api" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <noscript><style>#lead-form { display: none; }</style></noscript>
   <style id="chat-gallery-styles">
     .chat-gallery{position:relative;width:min(100%,350px);margin-inline:auto}
@@ -1220,7 +1219,7 @@ html.privacy-route body{padding-bottom:0}
   </main>
 
 
-  <!-- The form requires JavaScript and a verified Turnstile token. -->
+  <!-- The form is submitted to the Netlify backend. -->
   <dialog class="lead-dialog" id="lead-dialog" open aria-labelledby="lead-title" aria-describedby="lead-description">
     <button class="dialog-close" type="button" data-lead-close aria-label="Закрыть окно заявки" hidden><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></svg></button>
     <div id="lead-entry">
@@ -1228,18 +1227,14 @@ html.privacy-route body{padding-bottom:0}
       <h2 id="lead-title">Обсудить старт<br>в клубе</h2>
       <p class="lead-description" id="lead-description">Оставьте контакт. Менеджер ответит на ваши вопросы и расскажет об условиях участия.</p>
       <noscript><p class="form-note">Для проверки защиты и отправки заявки включите JavaScript в браузере и обновите страницу.</p></noscript>
-      <form id="lead-form" action="https://metod-kotova-leads.vir08894.workers.dev" method="post">
+      <form id="lead-form" action="https://metod-kotova-backend.netlify.app/send-lead" method="post">
         <input type="hidden" name="source" id="lead-source" value="membership">
+        <div class="sr-only" aria-hidden="true"><label for="lead-website">Не заполняйте это поле</label><input id="lead-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
         <div class="form-field"><label for="lead-name">Имя</label><input id="lead-name" name="name" type="text" autocomplete="given-name" required maxlength="80" aria-describedby="name-error"><p class="field-error" id="name-error" hidden></p></div>
         <div class="form-field"><label for="lead-contact">Telegram или телефон</label><input id="lead-contact" name="contact" type="text" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" required maxlength="100" aria-describedby="contact-hint contact-error"><p class="field-hint" id="contact-hint">Например, @username или +7 999 123-45-67</p><p class="field-error" id="contact-error" hidden></p></div>
         <div class="form-field"><label for="lead-situation">Ваша ситуация</label><select id="lead-situation" name="situation" required aria-describedby="situation-error"><option value="" selected disabled>Выберите вариант</option><option value="beginner">Начинаю с нуля</option><option value="entrepreneur">Есть предпринимательский опыт</option><option value="broker">Уже работаю бизнес-брокером</option></select><p class="field-error" id="situation-error" hidden></p></div>
         <p class="form-message" id="lead-error" role="alert" hidden></p>
-        <div class="lead-verification-wrap">
-          <div id="lead-turnstile" aria-describedby="lead-verification"></div>
-          <p class="field-hint" id="lead-verification" role="status" aria-live="polite">Перед отправкой нужно пройти проверку защиты.</p>
-          <button class="verification-retry" id="lead-turnstile-retry" type="button" hidden>Повторить проверку</button>
-        </div>
-        <button class="btn btn-primary form-submit" id="lead-submit" type="submit" disabled><span>Отправить заявку</span><svg aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+        <button class="btn btn-primary form-submit" id="lead-submit" type="submit"><span>Отправить заявку</span><svg aria-hidden="true"><use href="#icon-arrow"/></svg></button>
         <p class="form-note">Менеджер клуба свяжется с вами после заявки. Контакт нужен для ответа на ваше обращение. <a href="#privacy" target="_blank" rel="noopener noreferrer">Как обрабатываются данные</a>.</p>
         <p class="sr-only" id="lead-progress" role="status" aria-live="polite"></p>
       </form>
@@ -1283,7 +1278,7 @@ html.privacy-route body{padding-bottom:0}
           <section id="privacy-data" aria-labelledby="privacy-data-title"><h2 id="privacy-data-title">02. Какие данные и для чего</h2>
 <p>Форма запрашивает имя, Telegram или телефон и вашу ситуацию: начинаете с нуля, имеете предпринимательский опыт или уже работаете бизнес-брокером. Вместе с заявкой передаётся обозначение кнопки, через которую открыта форма.</p>
 <p>Эти сведения нужны, чтобы принять обращение, связаться с вами, ответить на вопросы о клубе и обсудить условия участия. При дальнейшем общении обрабатывается информация, которую вы сами сообщаете по своему запросу.</p>
-<p>Для защиты от автоматических отправок используется Cloudflare Turnstile. Он обрабатывает технические сигналы, включая IP-адрес, сведения браузера и соединения, ключ виджета и адрес сайта. Подробности — в <a href="https://www.cloudflare.com/turnstile-privacy-policy/" target="_blank" rel="noopener noreferrer">условиях конфиденциальности Turnstile</a>. Код страницы не передаёт значения полей заявки в события аналитики.</p>
+<p>Для обработки формы используется серверная функция Netlify. Для защиты от автоматических отправок применяются серверная проверка полей, скрытое антиспам-поле и ограничение частоты запросов. Код страницы не передаёт значения полей заявки в события аналитики.</p>
 <p>Ответ на ваше обращение не означает подписку на рекламные рассылки.</p>
           </section>
           <section id="privacy-basis" aria-labelledby="privacy-basis-title"><h2 id="privacy-basis-title">03. Правовые основания</h2>
@@ -1294,14 +1289,14 @@ html.privacy-route body{padding-bottom:0}
 <p>Данные должны храниться не дольше, чем необходимо для рассмотрения обращения и связанного с ним общения, если другое основание или срок не предусмотрены законом. После достижения цели или прекращения правового основания они подлежат удалению в установленном законом порядке.</p>
           </section>
           <section id="privacy-recipients" aria-labelledby="privacy-recipients-title"><h2 id="privacy-recipients-title">05. Кто получает доступ</h2>
-<p>После отправки данные поступают в Cloudflare Worker. Сервер проверяет заявку и Turnstile-токен, затем передаёт сообщение через Telegram Bot API в группу менеджера клуба. Имя, контакт, ситуация и источник заявки доступны лицам, имеющим доступ к этой группе, для обработки обращения.</p>
-<p>Cloudflare используется для работы серверного обработчика и проверки Turnstile, Telegram — для доставки и хранения сообщения менеджеру. Публикация данных заявителей не является целью формы. Сведения о работе сервисов приведены в их документах: <a href="https://www.cloudflare.com/policies/privacy/" target="_blank" rel="noopener noreferrer">Cloudflare</a> и <a href="https://telegram.org/privacy" target="_blank" rel="noopener noreferrer">Telegram</a>.</p>
+<p>После отправки данные поступают в Netlify Function. Сервер проверяет заявку, затем передаёт сообщение через Telegram Bot API в группу менеджера клуба. Имя, контакт, ситуация и источник заявки доступны лицам, имеющим доступ к этой группе, для обработки обращения.</p>
+<p>Netlify используется для работы серверного обработчика, Telegram — для доставки и хранения сообщения менеджеру. Публикация данных заявителей не является целью формы. Сведения о работе сервисов приведены в их документах: <a href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">Netlify</a> и <a href="https://telegram.org/privacy" target="_blank" rel="noopener noreferrer">Telegram</a>.</p>
           </section>
           <section id="privacy-location" aria-labelledby="privacy-location-title"><h2 id="privacy-location-title">06. Размещение данных и передача за рубеж</h2>
-<p>В обработке участвуют сервисы Cloudflare и Telegram. Использование этих сервисов само по себе не подтверждает размещение данных в России. Местонахождение используемых систем и условия передачи данных за рубеж должны соответствовать применимым требованиям статей 18 и 12 закона № 152-ФЗ.</p>
+<p>В обработке участвуют сервисы Netlify и Telegram. Использование этих сервисов само по себе не подтверждает размещение данных в России. Местонахождение используемых систем и условия передачи данных за рубеж должны соответствовать применимым требованиям статей 18 и 12 закона № 152-ФЗ.</p>
           </section>
           <section id="privacy-security" aria-labelledby="privacy-security-title"><h2 id="privacy-security-title">07. Защита данных</h2>
-<p>Для передачи заявки используются HTTPS, серверная проверка полей и Turnstile. Секретные ключи не размещаются в коде страницы. В ответах сервера посетителю не возвращаются персональные данные, секреты или внутренние подробности обработки.</p>
+<p>Для передачи заявки используются HTTPS, серверная проверка полей, антиспам-защита и ограничение частоты запросов. Секретные ключи не размещаются в коде страницы. В ответах сервера посетителю не возвращаются персональные данные, секреты или внутренние подробности обработки.</p>
 <p>Оператор обязан ограничивать доступ к данным, обеспечивать конфиденциальность их обработки и принимать необходимые меры защиты в соответствии с законом № 152-ФЗ.</p>
           </section>
           <section id="privacy-rights" aria-labelledby="privacy-rights-title"><h2 id="privacy-rights-title">08. Ваши права</h2>
@@ -1309,7 +1304,7 @@ html.privacy-route body{padding-bottom:0}
 <p>При наличии другого законного основания обработка может продолжаться в необходимом объёме; оператор должен объяснить это основание.</p>
           </section>
           <section id="privacy-requests" aria-labelledby="privacy-requests-title"><h2 id="privacy-requests-title">09. Обращения по персональным данным</h2>
-<p>Для вопросов об обработке данных, их уточнения или удаления и отзыва согласия: <span class="privacy-placeholder">Telegram: https://t.me/kotov_dmi</span>.</p>
+<p>Для вопросов об обработке данных, их уточнения или удаления и отзыва согласия: <span class="privacy-placeholder">[EMAIL ОПЕРАТОРА ДЛЯ ОБРАЩЕНИЙ]</span>.</p>
 <p>Укажите контакт для ответа и сведения, позволяющие найти вашу заявку. Не отправляйте избыточные документы или данные. При необходимости оператор может запросить сведения для подтверждения личности и полномочий в установленном законом порядке. Обращение рассматривается в сроки, предусмотренные законом № 152-ФЗ.</p>
           </section>
           <section id="privacy-updates" aria-labelledby="privacy-updates-title"><h2 id="privacy-updates-title">10. Изменения политики</h2>
@@ -1402,184 +1397,7 @@ html.privacy-route body{padding-bottom:0}
       let opener = null;
       let scrollState = null;
       let backdropPointerDown = false;
-      const LEAD_ENDPOINT = 'https://metod-kotova-leads.vir08894.workers.dev';
-      const TURNSTILE_SITE_KEY = '0x4AAAAAAFd9M388CU2yzA5-';
-      const TURNSTILE_SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-      const turnstileHost = document.getElementById('lead-turnstile');
-      const verificationStatus = document.getElementById('lead-verification');
-      const verificationRetry = document.getElementById('lead-turnstile-retry');
-      let turnstileScript = document.getElementById('turnstile-api');
-      let widgetId = null;
-      let widgetSize = '';
-      let widgetRendering = false;
-      let widgetGeneration = 0;
-      let verificationToken = '';
-      let tokenIssuedAt = 0;
-      let needsVerificationRefresh = false;
-      let scriptFailed = false;
-      let scriptWaitTimer = null;
-
-      function verificationVisible() {
-        return (!hasModal || dialog.open) && !entry.hidden;
-      }
-      function hasFreshToken() {
-        return !!verificationToken && Date.now() - tokenIssuedAt < 300000;
-      }
-      function syncSubmit() {
-        submit.disabled = state === 'pending' || state === 'success' || !hasFreshToken();
-      }
-      function verificationMessage(message, retry = false) {
-        verificationStatus.textContent = message;
-        verificationRetry.hidden = !retry;
-        verificationRetry.disabled = state === 'pending';
-        syncSubmit();
-      }
-      function clearVerificationToken() {
-        verificationToken = '';
-        tokenIssuedAt = 0;
-        syncSubmit();
-      }
-      function stopScriptWait() {
-        if (scriptWaitTimer !== null) window.clearTimeout(scriptWaitTimer);
-        scriptWaitTimer = null;
-      }
-      function verificationFailed(message) {
-        clearVerificationToken();
-        turnstileHost.removeAttribute('aria-busy');
-        needsVerificationRefresh = true;
-        verificationMessage(message, true);
-      }
-      function ensureTurnstile() {
-        if (!verificationVisible() || state === 'pending' || state === 'success') return;
-        const api = window.turnstile;
-        if (!api || typeof api.render !== 'function') {
-          turnstileHost.setAttribute('aria-busy', 'true');
-          if (scriptFailed) {
-            verificationFailed('Не удалось загрузить проверку защиты. Повторите загрузку или обновите страницу.');
-            return;
-          }
-          verificationMessage('Загружается проверка защиты…');
-          if (scriptWaitTimer === null) {
-            scriptWaitTimer = window.setTimeout(() => {
-              scriptWaitTimer = null;
-              if (verificationVisible() && (!window.turnstile || typeof window.turnstile.render !== 'function')) {
-                verificationFailed('Проверка защиты не загрузилась. Проверьте соединение и попробуйте ещё раз или обновите страницу.');
-              }
-            }, 12000);
-          }
-          return;
-        }
-        stopScriptWait();
-        if (widgetRendering) return;
-        const size = turnstileHost.clientWidth >= 300 ? 'flexible' : 'compact';
-        if (widgetId !== null && widgetSize !== size) {
-          try {
-            api.remove(widgetId);
-            widgetId = null;
-            widgetGeneration++;
-            clearVerificationToken();
-          } catch {
-            verificationFailed('Не удалось обновить проверку. Повторите попытку или обновите страницу.');
-            return;
-          }
-        }
-        if (widgetId !== null) {
-          if (needsVerificationRefresh) {
-            needsVerificationRefresh = false;
-            clearVerificationToken();
-            turnstileHost.setAttribute('aria-busy', 'true');
-            verificationMessage('Пройдите проверку защиты перед отправкой.');
-            try { api.reset(widgetId); }
-            catch { verificationFailed('Не удалось повторить проверку. Обновите страницу и попробуйте снова.'); }
-          }
-          return;
-        }
-        widgetRendering = true;
-        const generation = ++widgetGeneration;
-        verificationMessage('Пройдите проверку защиты перед отправкой.');
-        const renderWidget = () => {
-          widgetRendering = false;
-          if (generation !== widgetGeneration || !verificationVisible() || state !== 'idle') return;
-          widgetSize = turnstileHost.clientWidth >= 300 ? 'flexible' : 'compact';
-          needsVerificationRefresh = false;
-          turnstileHost.setAttribute('aria-busy', 'true');
-          const current = () => generation === widgetGeneration && state !== 'pending' && state !== 'success';
-          try {
-            widgetId = api.render(turnstileHost, {
-              sitekey: TURNSTILE_SITE_KEY,
-              action: 'lead_submit',
-              theme: 'light',
-              language: 'ru',
-              size: widgetSize,
-              'response-field': false,
-              retry: 'never',
-              'refresh-expired': 'manual',
-              'refresh-timeout': 'manual',
-              callback: (token) => {
-                if (!current() || !verificationVisible()) return;
-                if (typeof token !== 'string' || !token || token.length > 2048) {
-                  verificationFailed('Проверка не завершена. Повторите её перед отправкой.');
-                  return;
-                }
-                verificationToken = token;
-                tokenIssuedAt = Date.now();
-                needsVerificationRefresh = false;
-                turnstileHost.removeAttribute('aria-busy');
-                verificationMessage('Проверка пройдена. Можно отправить заявку.');
-              },
-              'expired-callback': () => {
-                if (current()) verificationFailed('Срок проверки истёк. Пройдите её ещё раз.');
-              },
-              'error-callback': () => {
-                if (current()) verificationFailed('Не удалось пройти проверку защиты. Повторите попытку.');
-              },
-              'timeout-callback': () => {
-                if (current()) verificationFailed('Время проверки истекло. Повторите попытку.');
-              },
-              'unsupported-callback': () => {
-                if (current()) verificationFailed('Проверка недоступна в этом браузере. Попробуйте открыть сайт в другом браузере.');
-              }
-            });
-          } catch {
-            verificationFailed('Не удалось запустить проверку защиты. Повторите попытку или обновите страницу.');
-          }
-        };
-        // render is used only after the API exists; the script load handler
-        // retries initialization if the dialog was opened before it loaded.
-        renderWidget();
-      }
-      function refreshVerification() {
-        clearVerificationToken();
-        needsVerificationRefresh = true;
-        ensureTurnstile();
-      }
-      function bindTurnstileScript(script) {
-        script.addEventListener('load', () => { scriptFailed = false; ensureTurnstile(); });
-        script.addEventListener('error', () => {
-          scriptFailed = true;
-          stopScriptWait();
-          if (verificationVisible()) verificationFailed('Не удалось загрузить проверку защиты. Повторите загрузку или обновите страницу.');
-        });
-      }
-      bindTurnstileScript(turnstileScript);
-      verificationRetry.addEventListener('click', () => {
-        if (state === 'pending') return;
-        if (scriptFailed && (!window.turnstile || typeof window.turnstile.render !== 'function')) {
-          turnstileScript.remove();
-          turnstileScript = document.createElement('script');
-          turnstileScript.id = 'turnstile-api';
-          turnstileScript.src = TURNSTILE_SCRIPT_URL;
-          turnstileScript.defer = true;
-          bindTurnstileScript(turnstileScript);
-          scriptFailed = false;
-          document.head.appendChild(turnstileScript);
-        }
-        refreshVerification();
-      });
-      window.addEventListener('resize', () => {
-        if (verificationVisible() && state === 'idle') ensureTurnstile();
-      });
-
+      const LEAD_ENDPOINT = 'https://metod-kotova-backend.netlify.app/send-lead';
 
       function lockScroll() {
         if (scrollState) return;
@@ -1616,13 +1434,10 @@ html.privacy-route body{padding-bottom:0}
         error.textContent = message;
         error.hidden = false;
       }
-      function validContact(value) {
-  return value.trim().length > 0;
-}
       function validate(payload) {
         const errors = {};
         if (!payload.name || payload.name.length > 80) errors.name = 'Укажите ваше имя.';
-        if (!validContact(payload.contact)) errors.contact = 'Укажите Telegram, например @username, или телефон с кодом страны.';
+        if (!payload.contact || payload.contact.length > 100) errors.contact = 'Укажите Telegram или телефон.';
         if (!situationValues.has(payload.situation)) errors.situation = 'Выберите вашу ситуацию.';
         return errors;
       }
@@ -1636,8 +1451,6 @@ html.privacy-route body{padding-bottom:0}
         Object.keys(fields).forEach(clearError);
         dialog.setAttribute('aria-labelledby', 'lead-title');
         dialog.setAttribute('aria-describedby', 'lead-description');
-        clearVerificationToken();
-        needsVerificationRefresh = true;
       }
       function openModal(trigger) {
         if (dialog.open) return;
@@ -1650,7 +1463,6 @@ html.privacy-route body{padding-bottom:0}
         dialog.scrollTop = 0;
         if (state === 'pending') dialog.querySelector('[data-lead-close]').focus({ preventScroll: true });
         else fields.name.focus({ preventScroll: true });
-        ensureTurnstile();
       }
       function closeModal() {
         if (hasModal && dialog.open) dialog.close();
@@ -1672,9 +1484,6 @@ html.privacy-route body{padding-bottom:0}
         dialog.addEventListener('close', () => {
           /* Ignore a queued close event if the dialog has already been reopened. */
           if (dialog.open) return;
-          stopScriptWait();
-          clearVerificationToken();
-          needsVerificationRefresh = true;
           unlockScroll();
           const target = opener && opener.isConnected && opener.getClientRects().length ? opener : menuSummary;
           if (target) target.focus({ preventScroll: true });
@@ -1703,17 +1512,15 @@ html.privacy-route body{padding-bottom:0}
           trigger.addEventListener('click', () => {
             if (state === 'success') resetSuccess();
             if (state !== 'pending') sourceField.value = allowedSources.has(trigger.dataset.location) ? trigger.dataset.location : 'membership';
-            ensureTurnstile();
-          });
+              });
         });
       }
       Object.entries(fields).forEach(([key, field]) => {
         field.addEventListener(key === 'situation' ? 'change' : 'input', () => { clearError(key); formError.hidden = true; });
       });
 
-      /* POST URL-encoded fields and a single-use Turnstile token to the Worker.
-         Only HTTP 2xx plus JSON success:true confirms Telegram delivery.
-         The Worker independently verifies the token, origin, hostname and action. */
+      /* POST URL-encoded fields to the Netlify backend.
+         Only HTTP 2xx plus JSON success:true confirms Telegram delivery. */
       async function deliverLead(payload, signal) {
         const response = await fetch(LEAD_ENDPOINT, {
           method: 'POST',
@@ -1725,8 +1532,7 @@ html.privacy-route body{padding-bottom:0}
         let result;
         try { result = await response.json(); } catch { throw new Error('delivery'); }
         if (!response.ok || !result || result.success !== true) {
-          const verificationErrors = ['Verification required', 'Verification failed', 'Verification unavailable'];
-          throw new Error(verificationErrors.includes(result?.error) ? 'verification' : 'delivery');
+          throw new Error('delivery');
         }
       }
       form.noValidate = true;
@@ -1735,7 +1541,7 @@ html.privacy-route body{padding-bottom:0}
         if (state === 'pending' || state === 'success') return;
         formError.hidden = true;
         Object.keys(fields).forEach(clearError);
-        const payload = { name: fields.name.value.trim(), contact: fields.contact.value.trim(), situation: fields.situation.value, source: allowedSources.has(sourceField.value) ? sourceField.value : 'membership' };
+        const payload = { name: fields.name.value.trim(), contact: fields.contact.value.trim(), situation: fields.situation.value, source: allowedSources.has(sourceField.value) ? sourceField.value : 'membership', website: document.getElementById('lead-website').value };
         const errors = validate(payload);
         const invalid = Object.keys(errors);
         if (invalid.length) {
@@ -1743,15 +1549,7 @@ html.privacy-route body{padding-bottom:0}
           fields[invalid[0]].focus();
           return;
         }
-        if (!hasFreshToken()) {
-          refreshVerification();
-          verificationMessage('Пройдите проверку защиты перед отправкой.', true);
-          return;
-        }
-        payload['cf-turnstile-response'] = verificationToken;
         state = 'pending';
-        clearVerificationToken();
-        verificationRetry.disabled = true;
         submit.disabled = true;
         submitLabel.textContent = 'Отправляем…';
         form.setAttribute('aria-busy', 'true');
@@ -1771,13 +1569,11 @@ html.privacy-route body{padding-bottom:0}
           if (dialog.open) { dialog.scrollTop = 0; successTitle.focus({ preventScroll: true }); }
         } catch (error) {
           state = 'idle';
-          formError.textContent = error.message === 'verification' ? 'Проверка защиты не подтверждена. Пройдите её заново и повторите отправку.' : 'Не удалось подтвердить отправку заявки. Попробуйте ещё раз позже.';
+          formError.textContent = 'Не удалось подтвердить отправку заявки. Попробуйте ещё раз позже.';
           formError.hidden = false;
           track('lead_error', payload.source);
         } finally {
           window.clearTimeout(timeout);
-          if (state !== 'success') refreshVerification();
-          syncSubmit();
           Object.values(fields).forEach((field) => { field.disabled = false; });
           submitLabel.textContent = 'Отправить заявку';
           form.removeAttribute('aria-busy');
@@ -1785,8 +1581,6 @@ html.privacy-route body{padding-bottom:0}
         }
       });
 
-      syncSubmit();
-      if (!hasModal) ensureTurnstile();
 
       /* Show the mobile action after the hero, hiding it near the closing CTA. */
       const bar = document.getElementById('mobile-action');
