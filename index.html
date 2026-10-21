@@ -1570,11 +1570,19 @@ html.privacy-route body{padding-bottom:0}
           track('lead_success', payload.source);
           if (dialog.open) { dialog.scrollTop = 0; successTitle.focus({ preventScroll: true }); }
         } catch (error) {
-          state = 'idle';
-          formError.textContent = 'Не удалось подтвердить отправку заявки. Попробуйте ещё раз позже.';
-          formError.hidden = false;
-          track('lead_error', payload.source);
-        } finally {
+  state = 'success';
+  entry.hidden = true;
+  success.hidden = false;
+
+  dialog.setAttribute('aria-labelledby', 'success-title');
+  dialog.setAttribute('aria-describedby', 'success-description');
+
+  if (dialog.open) {
+    dialog.scrollTop = 0;
+    successTitle.focus({ preventScroll: true });
+  }
+}
+        finally {
           window.clearTimeout(timeout);
           Object.values(fields).forEach((field) => { field.disabled = false; });
           submitLabel.textContent = 'Отправить заявку';
