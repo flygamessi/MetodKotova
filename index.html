@@ -1522,19 +1522,21 @@ html.privacy-route body{padding-bottom:0}
       /* POST URL-encoded fields to the Netlify backend.
          Only HTTP 2xx plus JSON success:true confirms Telegram delivery. */
       async function deliverLead(payload, signal) {
-        const response = await fetch(LEAD_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-          credentials: 'omit',
-          body: new URLSearchParams(payload).toString(),
-          signal
-        });
-        let result;
-        try { result = await response.json(); } catch { throw new Error('delivery'); }
-        if (!response.ok || !result || result.success !== true) {
-          throw new Error('delivery');
-        }
-      }
+  const response = await fetch(LEAD_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    },
+    credentials: 'omit',
+    body: new URLSearchParams(payload).toString(),
+    signal,
+    keepalive: true
+  });
+
+  if (!response.ok) {
+    throw new Error('delivery');
+  }
+}
       form.noValidate = true;
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
