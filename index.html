@@ -913,7 +913,7 @@ html.privacy-route body{padding-bottom:0}
 }
 
 
-    /* Existing form styles retained; verification-specific rules are harmless if unused. */
+    /* Verification belongs to the existing form; no profession/layout overrides. */
     .lead-verification-wrap { min-width: 0; margin: 18px 0; }
     #lead-turnstile { min-width: 0; max-width: 100%; }
     #lead-verification { margin-top: 8px; }
@@ -1219,7 +1219,7 @@ html.privacy-route body{padding-bottom:0}
   </main>
 
 
-  <!-- The form is submitted to the Netlify backend. -->
+  <!-- The form requires JavaScript and a verified Turnstile token. -->
   <dialog class="lead-dialog" id="lead-dialog" open aria-labelledby="lead-title" aria-describedby="lead-description">
     <button class="dialog-close" type="button" data-lead-close aria-label="Закрыть окно заявки" hidden><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></svg></button>
     <div id="lead-entry">
