@@ -1309,7 +1309,7 @@ html.privacy-route body{padding-bottom:0}
 <p>При наличии другого законного основания обработка может продолжаться в необходимом объёме; оператор должен объяснить это основание.</p>
           </section>
           <section id="privacy-requests" aria-labelledby="privacy-requests-title"><h2 id="privacy-requests-title">09. Обращения по персональным данным</h2>
-<p>Для вопросов об обработке данных, их уточнения или удаления и отзыва согласия: <span class="privacy-placeholder">[EMAIL ОПЕРАТОРА ДЛЯ ОБРАЩЕНИЙ]</span>.</p>
+<p>Для вопросов об обработке данных, их уточнения или удаления и отзыва согласия: <span class="privacy-placeholder">Telegram: https://t.me/kotov_dmi</span>.</p>
 <p>Укажите контакт для ответа и сведения, позволяющие найти вашу заявку. Не отправляйте избыточные документы или данные. При необходимости оператор может запросить сведения для подтверждения личности и полномочий в установленном законом порядке. Обращение рассматривается в сроки, предусмотренные законом № 152-ФЗ.</p>
           </section>
           <section id="privacy-updates" aria-labelledby="privacy-updates-title"><h2 id="privacy-updates-title">10. Изменения политики</h2>
@@ -1617,12 +1617,8 @@ html.privacy-route body{padding-bottom:0}
         error.hidden = false;
       }
       function validContact(value) {
-        const contact = value.trim();
-        const telegram = /^(?:@|(?:https?:\/\/)?t\.me\/)?[a-zA-Z][a-zA-Z0-9_]{4,31}$/;
-        const phone = /^\+?[\d\s().\-]+$/;
-        const digits = contact.replace(/\D/g, '');
-        return telegram.test(contact) || (phone.test(contact) && digits.length >= 7 && digits.length <= 15);
-      }
+  return value.trim().length > 0;
+}
       function validate(payload) {
         const errors = {};
         if (!payload.name || payload.name.length > 80) errors.name = 'Укажите ваше имя.';
